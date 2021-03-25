@@ -114,36 +114,6 @@ def get_pump_data(history_day_ago=1):
                                     pickle.dump(history_pages, output)
                                     logger.info("Sensor Block Saved to disk")
 
-                                events = mt.process_pump_history(history_pages, cnl24lib.HistoryDataType.SENSOR_DATA)
-                                all_ev = []
-
-                                # Insert to DB
-                                last_time_db_record = db_connect.get_last_record_sensor_status()
-                                for ev in events:
-                                    if ev.event_type == cnl24lib.NGPHistoryEvent.\
-                                            EVENT_TYPE.GENERATED_SENSOR_GLUCOSE_READINGS_EXTENDED_ITEM:
-                                        event_time_local = ev.timestamp.strftime("%d-%m-%Y %H:%M:%S")
-                                        event_time_utc = int(time.mktime(ev.timestamp.timetuple()))
-
-                                        if last_time_db_record is None or last_time_db_record < event_time_utc:
-                                            logger.debug("Insert the record DB(sensor)")
-                                            history_sensor = (
-                                                event_time_utc,
-                                                event_time_local,
-                                                ev.sg,
-                                                round((ev.sg / cnl24lib.NGPConstants.BG_UNITS.MMOLXLFACTOR), 1),
-                                                ev.predictedSg,
-                                                ev.isig,
-                                                ev.source,
-                                                ev.sensorError,
-                                                ev.sensorExceptionText
-                                            )
-                                            all_ev.append(history_sensor)
-
-                                if len(all_ev) > 0:
-                                    logger.info("Insert the record(s): {0} to DB(sensor)".format(len(all_ev)))
-                                    db_connect.insert_sensor_status(all_ev)
-
                             finally:
                                 mt.finish_ehsm()
                         else:
