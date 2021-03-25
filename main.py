@@ -487,7 +487,7 @@ if __name__ == '__main__':
 
     local_timezone = pytz.timezone("Europe/Samara")
 
-    # get_pump_data(10)
+    get_pump_data(10)
     parsing_history()
 
     diary.fill_diary(2)
