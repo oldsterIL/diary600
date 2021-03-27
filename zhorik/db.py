@@ -3,7 +3,6 @@
 
 import sqlite3
 import datetime as dt
-import json
 
 # NULL — значение NULL
 # INTEGER — целое число
@@ -12,11 +11,12 @@ import json
 # BLOB — бинарное представление крупных объектов, хранящееся в точности с тем, как его ввели
 
 
-class DB( object ):
+class DB(object):
     db_path = "var/db.sqlite3"
+
     def __init__(self):
 
-        conn = sqlite3.connect( self.db_path )
+        conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         q = """CREATE TABLE IF NOT EXISTS pump ( 
             time_utc_unix INTEGER UNIQUE,
@@ -263,8 +263,9 @@ class DB( object ):
     def insert_pump_status(self, status):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
-        q = "INSERT INTO pump VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
-        c.execute(q,status)
+        q = "INSERT INTO pump VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?," \
+            "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
+        c.execute(q, status)
         conn.commit()
         conn.close()
 
@@ -285,7 +286,7 @@ class DB( object ):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         q = "INSERT INTO sensor VALUES (?,?,?,?,?,?,?,?,?);"
-        c.executemany(q,sensor)
+        c.executemany(q, sensor)
         conn.commit()
         conn.close()
 
@@ -306,7 +307,7 @@ class DB( object ):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         q = "INSERT INTO history_BOLUS_WIZARD_ESTIMATE VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
-        c.executemany(q,history)
+        c.executemany(q, history)
         conn.commit()
         conn.close()
 
@@ -327,7 +328,7 @@ class DB( object ):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         q = "INSERT INTO history_DUAL_BOLUS_PART_DELIVERED VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
-        c.executemany(q,history)
+        c.executemany(q, history)
         conn.commit()
         conn.close()
 
@@ -348,7 +349,7 @@ class DB( object ):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         q = "INSERT INTO history_DUAL_BOLUS_PROGRAMMED VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?);"
-        c.executemany(q,history)
+        c.executemany(q, history)
         conn.commit()
         conn.close()
 
@@ -382,7 +383,7 @@ class DB( object ):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         q = "INSERT INTO history_NORMAL_BOLUS_PROGRAMMED VALUES (?,?,?,?,?,?,?,?,?,?);"
-        c.executemany(q,history)
+        c.executemany(q, history)
         conn.commit()
         conn.close()
 
@@ -403,11 +404,11 @@ class DB( object ):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         q = "INSERT INTO history_NORMAL_BOLUS_DELIVERED VALUES (?,?,?,?,?,?,?,?,?,?,?,?);"
-        c.executemany(q,history)
+        c.executemany(q, history)
         conn.commit()
         conn.close()
 
-    def  get_last_record_history_square_bolus_programmed(self):
+    def get_last_record_history_square_bolus_programmed(self):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         q = "SELECT event_time_unix FROM history_SQUARE_BOLUS_PROGRAMMED ORDER BY event_time_unix DESC LIMIT 1"
@@ -420,7 +421,7 @@ class DB( object ):
         else:
             return result[0]
 
-    def  get_last_record_history_square_bolus_delivered(self):
+    def get_last_record_history_square_bolus_delivered(self):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         q = "SELECT event_time_unix FROM history_SQUARE_BOLUS_DELIVERED ORDER BY event_time_unix DESC LIMIT 1"
@@ -433,7 +434,7 @@ class DB( object ):
         else:
             return result[0]
 
-    def  get_last_record_history_daily_totals(self):
+    def get_last_record_history_daily_totals(self):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         q = "SELECT event_time_unix FROM history_DAILY_TOTALS ORDER BY event_time_unix DESC LIMIT 1"
@@ -449,8 +450,9 @@ class DB( object ):
     def insert_history_daily_totals(self, history):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
-        q = "INSERT INTO history_DAILY_TOTALS VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
-        c.executemany(q,history)
+        q = "INSERT INTO history_DAILY_TOTALS VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?," \
+            "?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
+        c.executemany(q, history)
         conn.commit()
         conn.close()
 
@@ -458,7 +460,7 @@ class DB( object ):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         q = "INSERT INTO history_SQUARE_BOLUS_PROGRAMMED VALUES (?,?,?,?,?,?,?,?,?,?,?);"
-        c.executemany(q,history)
+        c.executemany(q, history)
         conn.commit()
         conn.close()
 
@@ -466,14 +468,22 @@ class DB( object ):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
         q = "INSERT INTO history_SQUARE_BOLUS_DELIVERED VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?);"
-        c.executemany(q,history)
+        c.executemany(q, history)
         conn.commit()
         conn.close()
+
+    @staticmethod
+    def dict_factory(cursor, row):
+        d = {}
+        for idx, col in enumerate(cursor.description):
+            d[col[0]] = row[idx]
+        return d
 
     def get_last_bgl(self, time):
         conn = sqlite3.connect(self.db_path)
         c = conn.cursor()
-        q = "SELECT sensor_bglMg, sensor_bglTime FROM sensor WHERE sensor_bglTime_unix >= ? AND sensor_bglTime_unix <= ? AND sensor_bglMg != 0 ORDER BY sensor_bglTime_unix DESC LIMIT 1"
+        q = "SELECT sensor_bglMg, sensor_bglTime FROM sensor WHERE sensor_bglTime_unix >= ? AND " \
+            "sensor_bglTime_unix <= ? AND sensor_bglMg != 0 ORDER BY sensor_bglTime_unix DESC LIMIT 1"
         from_time_bg = time - (60 * 60)
         c.execute(q, (from_time_bg, time))
         result_bg = c.fetchall()
@@ -488,152 +498,87 @@ class DB( object ):
         conn.close()
         return bgl, time_bgl
 
-    def get_time_of_day(self, time, data):
-        if time.hour >= 7 and time.hour < 13:
+    @staticmethod
+    def get_time_of_day(time, data):
+        if 7 <= time.hour < 13:
             data.update({'time_of_day': "breakfast"})
-        elif time.hour >= 13 and time.hour < 16:
+        elif 13 <= time.hour < 16:
             data.update({'time_of_day': "lunch"})
-        elif time.hour >= 16 and time.hour < 21:
+        elif 16 <= time.hour < 21:
             data.update({'time_of_day': "dinner"})
         else:
             data.update({'time_of_day': "night"})
 
     def get_bolus_wizard(self, from_utc, to_utc):
-
         out = []
-
         conn = sqlite3.connect(self.db_path)
+        conn.row_factory = self.dict_factory
         c = conn.cursor()
 
-        q = "SELECT hBWE.event_time_unix, hBWE.event_time, hBWE.carb_input, hBWE.food_estimate, hBWE.carb_ratio, hBWE.final_estimate, " \
-            "hBWE.active_insulin, hBWE.isf, hDBP.bolus_number, hDBP.normal_programmed_amount, " \
-            "hDBP.square_programmed_amount, hDBP.total_programmed_amount, hDBP.programmed_duration, " \
-            "hDBPD.delivered_amount, hDBPD.bolus_part_name, hDBPD.bolus_part, hDBPD.delivered_duration, hDBPD.canceled, hDBPD.event_time " \
+        q = "SELECT hBWE.event_time_unix, hBWE.event_time, hBWE.carb_input, hBWE.food_estimate, hBWE.carb_ratio, " \
+            "hBWE.final_estimate, hBWE.active_insulin, hBWE.isf, hBWE.carb_units, hDBP.bolus_number, " \
+            "hDBP.normal_programmed_amount, hDBP.square_programmed_amount, hDBP.total_programmed_amount, " \
+            "hDBP.programmed_duration, hDBPD.delivered_amount, hDBPD.bolus_part_name, hDBPD.bolus_part, " \
+            "hDBPD.delivered_duration, hDBPD.canceled, hDBPD.event_time " \
             "FROM history_BOLUS_WIZARD_ESTIMATE hBWE " \
             "JOIN history_DUAL_BOLUS_PROGRAMMED hDBP " \
             "on (hBWE.final_estimate = hDBP.total_programmed_amount AND " \
             "hBWE.programmed = 1 AND hBWE.event_time_unix = hDBP.bolusWizardEvent_time_unix) "\
-            "JOIN history_DUAL_BOLUS_PART_DELIVERED hDBPD on hDBP.bolus_number = hDBPD.bolus_number " \
+            "JOIN history_DUAL_BOLUS_PART_DELIVERED hDBPD on (hDBP.bolus_number = hDBPD.bolus_number AND " \
+            "hDBP.event_time_unix = hDBPD.programmedEvent_time_unix) " \
             "WHERE hBWE.event_time_unix >= ? AND hBWE.event_time_unix <= ? " \
             "ORDER BY hBWE.event_time_unix, hDBPD.bolus_part"
-            # "AND food_estimate != 0 ORDER BY hBWE.event_time_unix, hDBPD.bolus_part"
 
         c.execute(q, (from_utc, to_utc))
 
         dual_bolus = c.fetchall()
 
         for row in dual_bolus:
-            time = dt.datetime.fromtimestamp(row[0])
+            self.get_time_of_day(dt.datetime.fromtimestamp(row["event_time_unix"]), row)
+            row.update({'type': "dual"})
+            out.append(row)
 
-            data = {
-                "time_unix" : row[0],
-                "time" : row[1],
-                "type" : "dual",
-                "time_of_day" : "none",
-                "carb_input" : row[2],
-                "food_estimate" : row[3],
-                "carb_ratio" : row[4],
-                "final_estimate" : row[5],
-                "active_insulin" : row[6],
-                "isf" : row[7],
-                "bolus_number" : row[8],
-                "normal_programmed_amount" : row[9],
-                "square_programmed_amount" : row[10],
-                "total_programmed_amount" : row[11],
-                "programmed_duration" : row[12],
-                "delivered_amount" : row[13],
-                "bolus_part_name" : row[14],
-                "bolus_part": row[15],
-                "delivered_duration" : row[16],
-                "canceled" : row[17],
-                "event_time" : row[18]
-            }
-
-            self.get_time_of_day(time,data)
-            out.append(data)
-
-        q = "SELECT hBWE.event_time_unix, hBWE.event_time, hBWE.carb_input, hBWE.food_estimate, hBWE.carb_ratio, hBWE.final_estimate, " \
-            "hBWE.active_insulin, hBWE.isf, hNBP.bolus_number, hNBP.programmed_amount, hNBD.delivered_amount, hNBD.canceled, hNBD.event_time " \
+        q = "SELECT hBWE.event_time_unix, hBWE.event_time, hBWE.carb_input, hBWE.food_estimate, hBWE.carb_ratio, " \
+            "hBWE.final_estimate, hBWE.active_insulin, hBWE.isf, hBWE.carb_units, hNBP.bolus_number, " \
+            "hNBP.programmed_amount, hNBD.delivered_amount, hNBD.canceled, hNBD.event_time " \
             "FROM history_BOLUS_WIZARD_ESTIMATE hBWE " \
             "JOIN history_NORMAL_BOLUS_PROGRAMMED hNBP " \
             "on (hBWE.final_estimate = hNBP.programmed_amount AND " \
             "hBWE.programmed = 1 AND hBWE.event_time_unix = hNBP.bolusWizardEvent_time_unix) "\
-            "JOIN history_NORMAL_BOLUS_DELIVERED hNBD on hNBP.bolus_number = hNBD.bolus_number " \
+            "JOIN history_NORMAL_BOLUS_DELIVERED hNBD on (hNBP.bolus_number = hNBD.bolus_number AND " \
+            "hNBP.event_time_unix = hNBD.programmedEvent_time_unix) " \
             "WHERE hBWE.event_time_unix >= ? AND hBWE.event_time_unix <= ? " \
             "ORDER BY hBWE.event_time_unix"
-            # "AND food_estimate != 0 ORDER BY hBWE.event_time_unix"
 
         c.execute(q, (from_utc, to_utc))
         normal_bolus = c.fetchall()
         for row in normal_bolus:
-            time = dt.datetime.fromtimestamp(row[0])
+            self.get_time_of_day(dt.datetime.fromtimestamp(row["event_time_unix"]), row)
+            row.update({'type': "normal"})
+            out.append(row)
 
-            data = {
-                "time_unix" : row[0],
-                "time" : row[1],
-                "type" : "normal",
-                "time_of_day" : "none",
-                "carb_input" : row[2],
-                "food_estimate" : row[3],
-                "carb_ratio" : row[4],
-                "final_estimate" : row[5],
-                "active_insulin" : row[6],
-                "isf" : row[7],
-                "bolus_number" : row[8],
-                "programmed_amount" : row[9],
-                "delivered_amount" : row[10],
-                "canceled" : row[11],
-                "event_time" : row[12]
-            }
-            self.get_time_of_day(time,data)
-            out.append(data)
-
-        q = "SELECT hBWE.event_time_unix, hBWE.event_time, hBWE.carb_input, hBWE.food_estimate, hBWE.carb_ratio, hBWE.final_estimate, " \
-            "hBWE.active_insulin, hBWE.isf, hSBP.bolus_number, hSBP.programmed_amount, hSBD.delivered_amount, hSBD.delivered_duration, hSBD.canceled, hSBD.event_time " \
+        q = "SELECT hBWE.event_time_unix, hBWE.event_time, hBWE.carb_input, hBWE.food_estimate, hBWE.carb_ratio, " \
+            "hBWE.final_estimate, hBWE.active_insulin, hBWE.isf, hBWE.carb_units, hSBP.bolus_number, " \
+            "hSBP.programmed_amount, hSBD.delivered_amount, hSBD.delivered_duration, hSBD.canceled, hSBD.event_time " \
             "FROM history_BOLUS_WIZARD_ESTIMATE hBWE " \
             "JOIN history_SQUARE_BOLUS_PROGRAMMED hSBP " \
             "on (hBWE.final_estimate = hSBP.programmed_amount AND " \
             "hBWE.programmed = 1 AND hBWE.event_time_unix = hSBP.bolusWizardEvent_time_unix) "\
-            "JOIN history_SQUARE_BOLUS_DELIVERED hSBD on hSBP.bolus_source = hSBD.bolus_source " \
+            "JOIN history_SQUARE_BOLUS_DELIVERED hSBD on (hSBP.bolus_source = hSBD.bolus_source AND " \
+            "hSBP.event_time_unix = hSBD.programmedEvent_time_unix) " \
             "WHERE hBWE.event_time_unix >= ? AND hBWE.event_time_unix <= ? " \
             "ORDER BY hBWE.event_time_unix"
-            # "AND food_estimate != 0 ORDER BY hBWE.event_time_unix"
 
         c.execute(q, (from_utc, to_utc))
         square_bolus = c.fetchall()
         for row in square_bolus:
-            time = dt.datetime.fromtimestamp(row[0])
-
-            data = {
-                "time_unix" : row[0],
-                "time" : row[1],
-                "type" : "square",
-                "time_of_day" : "none",
-                "carb_input" : row[2],
-                "food_estimate" : row[3],
-                "carb_ratio" : row[4],
-                "final_estimate" : row[5],
-                "active_insulin" : row[6],
-                "isf" : row[7],
-                "bolus_number" : row[8],
-                "programmed_amount" : row[9],
-                "delivered_amount" : row[10],
-                "delivered_duration" : row[11],
-                "canceled" : row[12],
-                "event_time": row[13]
-            }
-            self.get_time_of_day(time,data)
-            out.append(data)
+            self.get_time_of_day(dt.datetime.fromtimestamp(row["event_time_unix"]), row)
+            row.update({'type': "square"})
+            out.append(row)
 
         conn.commit()
         conn.close()
         return out
-
-    def dict_factory(self, cursor, row):
-        d = {}
-        for idx, col in enumerate(cursor.description):
-            d[col[0]] = row[idx]
-        return d
 
     def get_history_daily_totals(self, from_utc, to_utc):
         out = {}

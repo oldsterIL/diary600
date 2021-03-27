@@ -805,8 +805,8 @@ class NormalBolusDeliveredEvent(BolusDeliveredEvent):
         matches = [x for x in history_events
                    if isinstance(x, BolusCanceledEvent)
                    and x.bolus_number == self.bolus_number
-                   and x.timestamp < self.timestamp
-                   and self.timestamp - x.timestamp < timedelta(minutes=5)]
+                   and x.timestamp <= self.timestamp
+                   and self.timestamp - x.timestamp <= timedelta(minutes=5)]
         if len(matches) == 1:
             self.canceledEvent = matches[0]
             self.canceled = True
@@ -1092,8 +1092,8 @@ class DualBolusPartDeliveredEvent(BolusDeliveredEvent):
         matches = [x for x in history_events
                    if isinstance(x, BolusCanceledEvent)
                    and x.bolus_number == self.bolus_number
-                   and x.timestamp < self.timestamp
-                   and self.timestamp - x.timestamp < timedelta(minutes=self.programmed_duration)]
+                   and x.timestamp <= self.timestamp
+                   and self.timestamp - x.timestamp <= timedelta(minutes=self.programmed_duration)]
         if len(matches) == 1:
             self.canceledEvent = matches[0]
             self.canceled = True
@@ -1182,8 +1182,8 @@ class SquareBolusDeliveredEvent(BolusDeliveredEvent):
         matches = [x for x in history_events
                    if isinstance(x, BolusCanceledEvent)
                    and x.bolus_number == self.bolus_number
-                   and x.timestamp < self.timestamp
-                   and self.timestamp - x.timestamp < timedelta(minutes=self.programmed_duration)]
+                   and x.timestamp <= self.timestamp
+                   and self.timestamp - x.timestamp <= timedelta(minutes=self.programmed_duration)]
         if len(matches) == 1:
             self.canceledEvent = matches[0]
             self.canceled = True
@@ -2771,106 +2771,106 @@ class PumpEvent():
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 4:
+        if code == 4:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 6:
+        if code == 6:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 7:
+        if code == 7:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 8:
+        if code == 8:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 11:
+        if code == 11:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 15:
+        if code == 15:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 23:
+        if code == 23:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 53:
+        if code == 53:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 54:
+        if code == 54:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 58:
+        if code == 58:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.NORMAL
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 61:
+        if code == 61:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.LOWEST
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 66:
+        if code == 66:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.LOWEST
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 70:
+        if code == 70:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 71:
+        if code == 71:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             insulin = self.get_insulin(0, data)
             self.insulin = insulin
             return self.format(self.type, self.priority,(NGPConstants.ALARM_MESSAGE_NAME[code]).format(insulin))
 
-        elif code == 72:
+        if code == 72:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             insulin = self.get_insulin(0, data)
             self.insulin = insulin
             return self.format(self.type, self.priority,(NGPConstants.ALARM_MESSAGE_NAME[code]).format(insulin))
 
-        elif code == 73:
+        if code == 73:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 84:
+        if code == 84:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 100:
+        if code == 100:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 104:
+        if code == 104:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.NORMAL
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 105:
+        if code == 105:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.NORMAL
             insulin = self.get_insulin(0, data)
@@ -2878,17 +2878,17 @@ class PumpEvent():
             return self.format(self.type, self.priority,(NGPConstants.ALARM_MESSAGE_NAME[code]).format(insulin))
 
         # TODO Fix me, add "hours"
-        # elif code == 106:
+        # if code == 106:
         #     self.type = NGPConstants.ALARM_TYPE.PUMP
         #     self.priority = NGPConstants.ALARM_PRIORITY.NORMAL
         #     return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 107:
+        if code == 107:
             self.type = NGPConstants.ALARM_TYPE.REMINDER
             self.priority = NGPConstants.ALARM_PRIORITY.NORMAL
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 108:
+        if code == 108:
             self.type = NGPConstants.ALARM_TYPE.REMINDER
             self.priority = NGPConstants.ALARM_PRIORITY.NORMAL
 
@@ -2900,7 +2900,7 @@ class PumpEvent():
             return self.format(self.type, self.priority,(NGPConstants.ALARM_MESSAGE_NAME[code]).
                                format(str_list, time))
 
-        elif code == 109:
+        if code == 109:
             self.type = NGPConstants.ALARM_TYPE.REMINDER
             self.priority = NGPConstants.ALARM_PRIORITY.NORMAL
             str_list = self.get_list(0,data, "One day|Two days|Three days")
@@ -2908,114 +2908,114 @@ class PumpEvent():
             return self.format(self.type, self.priority,(NGPConstants.ALARM_MESSAGE_NAME[code]).
                                format(str_list))
 
-        elif code == 110:
+        if code == 110:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.LOWEST
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 113:
+        if code == 113:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 117:
+        if code == 117:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 775:
+        if code == 775:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 776:
+        if code == 776:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 777:
+        if code == 777:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 778:
+        if code == 778:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 780:
+        if code == 780:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 781:
+        if code == 781:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 784:
+        if code == 784:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 786:
+        if code == 786:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
             time = self.get_clock(0, data)
             return self.format(self.type, self.priority,(NGPConstants.ALARM_MESSAGE_NAME[code]).format(time))
 
-        elif code == 788:
+        if code == 788:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 790:
+        if code == 790:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 791:
+        if code == 791:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 794:
+        if code == 794:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 795:
+        if code == 795:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 796:
+        if code == 796:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 797:
+        if code == 797:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.LOWEST
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 798:
+        if code == 798:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.LOWEST
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 799:
+        if code == 799:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.LOWEST
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 801:
+        if code == 801:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
 
 
-        elif code == 802:
+        if code == 802:
             bg = self.get_glucose(0x01,data)
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
@@ -3026,12 +3026,12 @@ class PumpEvent():
             else:
                 return "[Error data]"
 
-        elif code == 803:
+        if code == 803:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 805:
+        if code == 805:
             bg = self.get_glucose(0x01,data)
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
@@ -3042,12 +3042,12 @@ class PumpEvent():
             else:
                 return "[Error data]"
 
-        elif code == 806:
+        if code == 806:
             self.type = NGPConstants.ALARM_TYPE.SMARTGUARD
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 807:
+        if code == 807:
             self.type = NGPConstants.ALARM_TYPE.SMARTGUARD
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             time = self.get_clock(4,data)
@@ -3055,12 +3055,12 @@ class PumpEvent():
             self.time = time
             return self.format(self.type, self.priority,(NGPConstants.ALARM_MESSAGE_NAME[code]).format(time))
 
-        elif code == 808:
+        if code == 808:
             self.type = NGPConstants.ALARM_TYPE.SMARTGUARD
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 809:
+        if code == 809:
             bg = self.get_glucose(0x01,data)
             self.type = NGPConstants.ALARM_TYPE.SMARTGUARD
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
@@ -3071,32 +3071,32 @@ class PumpEvent():
             else:
                 return "[Error data]"
 
-        elif code == 810:
+        if code == 810:
             self.type = NGPConstants.ALARM_TYPE.SMARTGUARD
             self.priority = NGPConstants.ALARM_PRIORITY.LOW
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 811:
+        if code == 811:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.NORMAL
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 812:
+        if code == 812:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 814:
+        if code == 814:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.NORMAL
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 815:
+        if code == 815:
             self.type = NGPConstants.ALARM_TYPE.PUMP
             self.priority = NGPConstants.ALARM_PRIORITY.NORMAL
             return self.format(self.type, self.priority, NGPConstants.ALARM_MESSAGE_NAME[code])
 
-        elif code == 816:
+        if code == 816:
             bg = self.get_glucose(0x01,data)
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.EMERGENCY
@@ -3107,7 +3107,7 @@ class PumpEvent():
             else:
                 return "[Error data]"
 
-        elif code == 817:
+        if code == 817:
             bg = self.get_glucose(0x01,data)
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.HIGH
@@ -3118,16 +3118,15 @@ class PumpEvent():
             else:
                 return "[Error data]"
 
-        elif code == 869:
+        if code == 869:
             self.type = NGPConstants.ALARM_TYPE.REMINDER
             self.priority = NGPConstants.ALARM_PRIORITY.NORMAL
 
-            # TODO
             time = self.get_clock(0,data)
             self.time = time
             return self.format(self.type, self.priority,(NGPConstants.ALARM_MESSAGE_NAME[code]).format(time))
 
-        elif code == 870:
+        if code == 870:
             self.type = NGPConstants.ALARM_TYPE.SENSOR
             self.priority = NGPConstants.ALARM_PRIORITY.NORMAL
             return self.format(self.type, self.priority,NGPConstants.ALARM_MESSAGE_NAME[code])
@@ -3762,7 +3761,9 @@ class DateTimeHelper(object):
         # For example, if baseTime + rtc + offset was 1463137668, this would be
         # Fri, 13 May 2016 21:07:48 UTC.
         # However, the time the pump *means* is Fri, 13 May 2016 21:07:48 in our own timezone
+
         offset_from_utc = int((datetime.datetime.utcnow() - datetime.datetime.now()).total_seconds())
+        # offset_from_utc = (datetime.datetime.utcnow() - datetime.datetime.now()).total_seconds()
         epoch_time = DateTimeHelper.baseTime + rtc + offset + offset_from_utc
         if epoch_time < 0:
             epoch_time = 0

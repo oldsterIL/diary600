@@ -5,7 +5,6 @@ import logging
 logging.basicConfig(format='%(asctime)s %(levelname)s [%(name)s] %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-
 import driver.cnl24lib as cnl24lib
 import zhorik.db as db
 import zhorik.diary as diary
@@ -24,10 +23,8 @@ import sys
 # DEBUG
 
 
-
 def get_pump_data(history_day_ago=1):
     mt = cnl24lib.Medtronic600SeriesDriver()
-    db_connect = db.DB()
 
     if mt.open_device():
         logger.debug("Open USB")
@@ -194,8 +191,6 @@ def parsing_history():
     all_history_square_bolus_programmed = []
     all_history_square_bolus_delivered = []
     for ev in events:
-
-
         if ev.event_type != cnl24lib.NGPHistoryEvent.EVENT_TYPE.PLGM_CONTROLLER_STATE:
 
             print(ev)
@@ -487,8 +482,10 @@ if __name__ == '__main__':
 
     local_timezone = pytz.timezone("Europe/Samara")
 
-    # get_pump_data(10)
+    get_pump_data(10)
     parsing_history()
 
-    diary.fill_diary(2)
+    for x in range(0, 9):
+        diary.fill_diary(x)
+
     sys.exit(0)

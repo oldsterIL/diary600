@@ -177,6 +177,14 @@ def insert_to_sheet(sheet, food_estimate, bolus, bolus_type, carb_ratio, carb_in
 
 def fill_diary(date_ago):
 
+    global breakfast
+    global lunch
+    global dinner
+
+    breakfast = 0
+    lunch = 0
+    dinner = 0
+
     today = dt.datetime.combine(dt.datetime.today(), dt.time.min)
     to_tmp = today - dt.timedelta(days=date_ago)
     from_tmp = to_tmp - dt.timedelta(days=1)
@@ -199,7 +207,7 @@ def fill_diary(date_ago):
 
     for next_data in out:
         time_of_day = next_data["time_of_day"]
-        time_unix = next_data["time_unix"]
+        time_unix = next_data["event_time_unix"]
 
         print(next_data)
 
@@ -215,7 +223,14 @@ def fill_diary(date_ago):
                 # Показатели
                 bolus = "{} ({}/{})".format(total, normal, square)
                 bolus_type = "Д:{}/{} ({})".format(normal_perc, square_perc, next_data["programmed_duration"])
-                carb_input_xe = "{} ({})".format(next_data["carb_input"] * 10, next_data["carb_input"])
+                if next_data["carb_units"] == cnl24lib.NGPConstants.CARB_UNITS.EXCHANGES:
+                    carb = next_data["carb_input"] * 10
+                    xe = next_data["carb_input"]
+                else:
+                    carb = next_data["carb_input"]
+                    xe = next_data["carb_input"] / 10.0
+
+                carb_input_xe = "{} ({})".format(carb, xe)
 
                 # Комменты
                 dual_end_tmp = next_data["event_time"]
@@ -253,9 +268,15 @@ def fill_diary(date_ago):
             bolus = next_data["final_estimate"]
 
             bolus_type = "H:{}".format(next_data["final_estimate"])
-            carb_input_xe = "{} ({})".format(next_data["carb_input"] * 10, next_data["carb_input"])
             normal_start = next_data["event_time"].split(" ")[1].split(":")
             bolus_start = "{}:{}".format(normal_start[0], normal_start[1])
+            if next_data["carb_units"] == cnl24lib.NGPConstants.CARB_UNITS.EXCHANGES:
+                carb = next_data["carb_input"] * 10
+                xe = next_data["carb_input"]
+            else:
+                carb = next_data["carb_input"]
+                xe = next_data["carb_input"] / 10.0
+            carb_input_xe = "{} ({})".format(carb, xe)
 
             if next_data["canceled"] == 1:
                 comments = "{} ({}/{})".format(bolus_start, next_data["programmed_amount"],
@@ -276,7 +297,13 @@ def fill_diary(date_ago):
             # Показатели
             bolus = next_data["final_estimate"]
             bolus_type = "К:{}".format(next_data["final_estimate"])
-            carb_input_xe = "{} ({})".format(next_data["carb_input"] * 10, next_data["carb_input"])
+            if next_data["carb_units"] == cnl24lib.NGPConstants.CARB_UNITS.EXCHANGES:
+                carb = next_data["carb_input"] * 10
+                xe = next_data["carb_input"]
+            else:
+                carb = next_data["carb_input"]
+                xe = next_data["carb_input"] / 10.0
+            carb_input_xe = "{} ({})".format(carb, xe)
 
             normal_start = next_data["event_time"].split(" ")[1].split(":")
             bolus_start = "{}:{},".format(normal_start[0], normal_start[1])
@@ -312,5 +339,7 @@ def fill_diary(date_ago):
     sheet.cell(row=6, column=1).value = "Измерений в день:{}, Сахар(Средний):{}".format(
         next_data["meter_bg_count"], round((next_data["sg_average"] / cnl24lib.NGPConstants.BG_UNITS.MMOLXLFACTOR), 1))
 
-    wb.save("report.xlsx")
+    out_file_name = "report_{}.xlsx".format(time.strftime("%Y_%m_%d", time.localtime(from_utc)))
+
+    wb.save(out_file_name)
     wb.close()
